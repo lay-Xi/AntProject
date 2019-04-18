@@ -1,11 +1,11 @@
-const WIDTH = 600;
-const HEIGHT = 600;
+const WIDTH = 400;
+const HEIGHT = 300;
 const ants = [];
 let surface = null;
 let start;
 let end;
 const GOAL_RADIUS = 20;
-const NUM_ANTS = 50;
+const NUM_ANTS = 200;
 const TOUCH_TIMER = 70;
 const UNFREEZE_TIMER = 30;
 const SPEED = 4;
@@ -19,15 +19,15 @@ function setup() {
   surface = [
     createVector(0, 0),
     createVector(100, 0),
-    createVector(100, 600),
-    createVector(0, 600),
+    createVector(100, HEIGHT),
+    createVector(0, HEIGHT),
   ];
 
   // Start dot
-  start = createVector(0, 300);
+  start = createVector(0, HEIGHT / 2);
 
   // Target dot
-  end = createVector(550, 300);
+  end = createVector(WIDTH - 50, HEIGHT / 2);
 
   // Creates ants
   for (let i = 0; i < NUM_ANTS; i++) {
@@ -35,11 +35,11 @@ function setup() {
       frozen: false,
       timer: 0,
       speed: SPEED,
-      position: createVector(0, 300),
+      position: createVector(0, HEIGHT / 2),
       target: end,
       angle: random(-Math.PI, Math.PI),
       above: new Set(),
-      below: new Set()
+      below: new Set(),
     });
   }
 }
