@@ -1,8 +1,9 @@
-const WIDTH = 500;
-const HEIGHT = 450;
+const WIDTH = 600;
+const HEIGHT = 600;
 const ants = [];
 let surface = null;
-let start, end;
+let start;
+let end;
 const GOAL_RADIUS = 20;
 const NUM_ANTS = 100;
 const TOUCH_TIMER = 70;
@@ -14,26 +15,29 @@ const JIGGLE_SPEED = 0.2;
 function setup() {
   createCanvas(WIDTH, HEIGHT);
 
+  // White surface
   surface = [
-    createVector(-100, 600),
-    createVector(-50, 650),
-    createVector(250, 100),
-    createVector(450, 450),
-    createVector(500, 420),
-    createVector(250, 0),
+    createVector(0, 0),
+    createVector(100, 0),
+    createVector(100, 600),
+    createVector(0, 600),
   ];
-  start = createVector(35, 420);
-  end = createVector(465, 420);
 
+  // Start dot
+  start = createVector(0, 300);
+
+  // Target dot
+  end = createVector(550, 300);
+
+  // Creates ants
   for (let i = 0; i < NUM_ANTS; i++) {
-    const x = random(-75, 200);
     ants.push({
       frozen: false,
       timer: 0,
       speed: SPEED,
-      position: createVector(x, 120 + 300 * (1 - (x - 35) / (200 - 35))),
+      position: createVector(0, 300),
       target: end,
-      angle: random(0, -Math.PI / 2),
+      angle: random(-Math.PI, Math.PI),
       above: new Set(),
       below: new Set()
     });
@@ -60,6 +64,7 @@ function tryStep(ant, nextPosition) {
       .sub(a.position)
       .mag() < 10
     );
+
     if (antCollisions.length > 0) {
       antCollisions.forEach(a => {
         a.above.add(ant);
