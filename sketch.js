@@ -5,7 +5,7 @@ let surface = null;
 let start;
 let end;
 const GOAL_RADIUS = 20;
-const NUM_ANTS = 100;
+const NUM_ANTS = 50;
 const TOUCH_TIMER = 70;
 const UNFREEZE_TIMER = 30;
 const SPEED = 4;
@@ -45,25 +45,22 @@ function setup() {
 }
 
 function tryStep(ant, nextPosition) {
+  // https://github.com/bmoren/p5.collide2D/#collidepointpoly
   const onSurface = collidePointPoly(nextPosition.x, nextPosition.y, surface);
+
+  //
   [...ant.below].forEach(a => {
     a.above.delete(ant);
   });
+
+  // Clears ant below set
   ant.below.clear();
 
   if (onSurface) {
     ant.position = nextPosition;
     return true;
   } else {
-    const antCollisions = ants.filter(
-      a =>
-      a != ant &&
-      a.frozen &&
-      nextPosition
-      .copy()
-      .sub(a.position)
-      .mag() < 10
-    );
+    const antCollisions = ants.filter(a => a != ant && a.frozen && nextPosition.copy().sub(a.position).mag() < 10);
 
     if (antCollisions.length > 0) {
       antCollisions.forEach(a => {
@@ -80,55 +77,29 @@ function tryStep(ant, nextPosition) {
 
 function draw() {
   ants.forEach(ant => {
-    if (
-      ant.position
-      .copy()
-      .sub(ant.target)
-      .mag() <
-      GOAL_RADIUS + 10
-    ) {
-      ant.target = ant.target == end ? start : end;
+    if (ant.position.copy().sub(ant.target).mag() < GOAL_RADIUS + 10) {
+      ant.target = ant.target == end
+        ? start
+        : end;
       ant.angle = random(0, Math.PI);
     }
     ant.angle += random(-1, 1) * JIGGLE_SPEED;
 
-    if (ant.timer > 0) ant.timer--;
+    if (ant.timer > 0)
+      ant.timer--;
     if (!ant.frozen) {
-      const toTarget = ant.target
-        .copy()
-        .sub(ant.angle)
-        .normalize();
-      const antAngle = createVector(
-        Math.cos(ant.angle),
-        Math.sin(ant.angle)
-      ).normalize();
-      const closerToTarget = antAngle
-        .copy()
-        .mult(0.7)
-        .add(toTarget.copy().mult(0.3));
-      if (tryStep(ant, ant.position.copy().add(antAngle.mult(ant.speed)))) {} else if (
-        tryStep(ant, ant.position.copy().add(closerToTarget.mult(ant.speed)))
-      ) {
+      const toTarget = ant.target.copy().sub(ant.angle).normalize();
+      const antAngle = createVector(Math.cos(ant.angle), Math.sin(ant.angle)).normalize();
+      const closerToTarget = antAngle.copy().mult(0.7).add(toTarget.copy().mult(0.3));
+      if (tryStep(ant, ant.position.copy().add(antAngle.mult(ant.speed)))) {} else if (tryStep(ant, ant.position.copy().add(closerToTarget.mult(ant.speed)))) {
         ant.angle = closerToTarget.heading();
-      } else if (
-        tryStep(ant, ant.position.copy().add(antAngle.copy().mult(ant.speed)))
-      ) {} else if (ant.timer === 0) {
+      } else if (tryStep(ant, ant.position.copy().add(antAngle.copy().mult(ant.speed)))) {} else if (ant.timer === 0) {
         ant.timer = TOUCH_TIMER;
         ant.frozen = true;
-        ants
-          .filter(
-            a =>
-            a != ant &&
-            a.frozen &&
-            ant.position
-            .copy()
-            .sub(a.position)
-            .mag() < 10
-          )
-          .forEach(a => {
-            a.above.add(ant);
-            ant.below.add(a);
-          });
+        ants.filter(a => a != ant && a.frozen && ant.position.copy().sub(a.position).mag() < 10).forEach(a => {
+          a.above.add(ant);
+          ant.below.add(a);
+        });
       } else {
         ant.angle -= TURN_SPEED * Math.random(-1, 1);
       }
@@ -156,9 +127,7 @@ function draw() {
   endShape(CLOSE);
 
   fill("rgba(255, 0, 0, 0.5)");
-  [start, end].forEach(v =>
-    ellipse(v.x, v.y, 2 * GOAL_RADIUS, 2 * GOAL_RADIUS)
-  );
+  [start, end].forEach(v => ellipse(v.x, v.y, 2 * GOAL_RADIUS, 2 * GOAL_RADIUS));
 
   ants.forEach(ant => {
     if (ant.target == end) {
