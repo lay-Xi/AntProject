@@ -7,7 +7,7 @@ const GOAL_RADIUS = 20;
 const NUM_ANTS = 100;
 const TOUCH_TIMER = 70;
 const UNFREEZE_TIMER = 30;
-const SPEED = 4;
+const SPEED = 3;
 const TURN_SPEED = 0.5;
 const JIGGLE_SPEED = 0.2;
 
