@@ -1,9 +1,6 @@
 const WIDTH = 300;
 const HEIGHT = 300;
 const ants = [];
-let surface = null;
-let start;
-let end;
 const GOAL_RADIUS = 20;
 const NUM_ANTS = 50;
 const TOUCH_TIMER = 70;
@@ -11,6 +8,10 @@ const UNFREEZE_TIMER = 30;
 const SPEED = 5;
 const TURN_SPEED = 0.5;
 const JIGGLE_SPEED = 0.2;
+
+let surface = null;
+let start;
+let end;
 
 function setup() {
   createCanvas(WIDTH, HEIGHT);
@@ -35,7 +36,7 @@ function setup() {
   start = createVector(0, HEIGHT / 2);
 
   // Target dot
-  end = createVector(WIDTH - 50, HEIGHT / 2);
+  end = createVector(WIDTH, HEIGHT / 2);
 
   // Creates ants
   for (let i = 0; i < NUM_ANTS; i++) {
@@ -44,9 +45,9 @@ function setup() {
       frozen: false,
       timer: 0,
       speed: SPEED,
-      position: createVector(0, HEIGHT / 2),
+      position: createVector(0, random(0, HEIGHT)),
       target: end,
-      angle: random(-Math.PI, Math.PI),
+      angle: random(-Math.PI / 4, Math.PI / 4),
       above: new Set(),
       below: new Set(),
     });
