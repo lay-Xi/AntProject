@@ -36,7 +36,7 @@ function setup() {
   start = createVector(0, HEIGHT / 2);
 
   // Target dot
-  end = createVector(WIDTH, HEIGHT / 2);
+  end = createVector(WIDTH, random(0, HEIGHT));
 
   // Creates ants
   for (let i = 0; i < NUM_ANTS; i++) {
