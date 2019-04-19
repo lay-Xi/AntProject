@@ -8,7 +8,7 @@ const GOAL_RADIUS = 20;
 const NUM_ANTS = 50;
 const TOUCH_TIMER = 70;
 const UNFREEZE_TIMER = 30;
-const SPEED = 4;
+const SPEED = 5;
 const TURN_SPEED = 0.5;
 const JIGGLE_SPEED = 0.2;
 
@@ -23,6 +23,13 @@ function setup() {
     createVector(0, HEIGHT),
   ];
 
+  surface2 = [
+    createVector(WIDTH - 100, 0),
+    createVector(WIDTH, 0),
+    createVector(WIDTH, HEIGHT),
+    createVector(WIDTH - 100, HEIGHT),
+  ];
+
   // Start dot
   start = createVector(0, HEIGHT / 2);
 
@@ -31,6 +38,7 @@ function setup() {
 
   // Creates ants
   for (let i = 0; i < NUM_ANTS; i++) {
+    //push adds new items to end of array, returns length
     ants.push({
       frozen: false,
       timer: 0,
@@ -47,6 +55,7 @@ function setup() {
 function tryStep(ant, nextPosition) {
   // https://github.com/bmoren/p5.collide2D/#collidepointpoly
   const onSurface = collidePointPoly(nextPosition.x, nextPosition.y, surface);
+  const onSurface2 = collidePointPoly(nextPosition.x, nextPosition.y, surface2);
 
   // Because ant moves, it is removed from the other ant's above set.
   [...ant.below].forEach(a => {
@@ -56,15 +65,14 @@ function tryStep(ant, nextPosition) {
   // Clears ant below set since it won't have those ants below it anymore.
   ant.below.clear();
 
-  // Moves ant to next location on surface
-  if (onSurface) {
+//Checks if ant on surface otherwise updates antCollisions
+  if (onSurface || onSurface2) {
     ant.position = nextPosition;
     return true;
   } else {
-    // Gets list of ants that are frozen and in range
+    //filter - anything that fits requirements stays in array all else discarded
     const antCollisions = ants.filter(a => a != ant && a.frozen && nextPosition.copy().sub(a.position).mag() < 10);
-
-    // If there are ants in range, add the ant's that are below and above
+//.mag calculate length of vector
     if (antCollisions.length > 0) {
       antCollisions.forEach(a => {
         a.above.add(ant);
@@ -146,6 +154,11 @@ function draw() {
   fill(200);
   beginShape();
   surface.forEach(v => vertex(v.x, v.y));
+  endShape(CLOSE);
+
+  fill(200);
+  beginShape();
+  surface2.forEach(v => vertex(v.x, v.y));
   endShape(CLOSE);
 
   // Start and end dots
