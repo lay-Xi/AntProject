@@ -15,7 +15,7 @@ const JIGGLE_SPEED = 0.2;
 function setup() {
   createCanvas(WIDTH, HEIGHT);
 
-  // White surface
+  // Walking surface 1
   surface = [
     createVector(0, 0),
     createVector(100, 0),
@@ -23,6 +23,7 @@ function setup() {
     createVector(0, HEIGHT),
   ];
 
+  // Walking suface 2
   surface2 = [
     createVector(WIDTH - 100, 0),
     createVector(WIDTH, 0),
@@ -38,7 +39,7 @@ function setup() {
 
   // Creates ants
   for (let i = 0; i < NUM_ANTS; i++) {
-    //push adds new items to end of array, returns length
+    // Push - adds new items to end of array, returns length
     ants.push({
       frozen: false,
       timer: 0,
@@ -65,14 +66,15 @@ function tryStep(ant, nextPosition) {
   // Clears ant below set since it won't have those ants below it anymore.
   ant.below.clear();
 
-//Checks if ant on surface otherwise updates antCollisions
+  // Checks if ant on surface otherwise updates antCollisions
   if (onSurface || onSurface2) {
     ant.position = nextPosition;
     return true;
   } else {
-    //filter - anything that fits requirements stays in array all else discarded
+    // filter() - anything that fits requirements stays in array all else discarded
+    // mag() - calculate length of vector
     const antCollisions = ants.filter(a => a != ant && a.frozen && nextPosition.copy().sub(a.position).mag() < 10);
-//.mag calculate length of vector
+
     if (antCollisions.length > 0) {
       antCollisions.forEach(a => {
         a.above.add(ant);
