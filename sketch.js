@@ -69,7 +69,7 @@ function tryStep(ant, nextPosition) {
   // Clears ant below set since it won't have those ants below it anymore.
   ant.below.clear();
 
-  // Checks if ant on surface otherwise updates antCollisions
+  // Checks if ant on surface otherwise updates antCollisions and get completion time if other side reached
   if (onSurface || onSurface2) {
     if (!goalReached && onSurface2) {
       completionTime = round(millis() / 1000);
@@ -97,7 +97,7 @@ function tryStep(ant, nextPosition) {
 }
 
 function draw() {
-  // If ant is within goal, change ant's target and get completion time
+  // If ant is within goal, change ant's target
   ants.forEach(ant => {
     if (ant.position.copy().sub(ant.target).mag() < GOAL_RADIUS + 10) {
       ant.target = ant.target == end
