@@ -1,5 +1,5 @@
 const WIDTH = 300;
-const HEIGHT = 100;
+const HEIGHT = 300;
 const ants = [];
 const GOAL_RADIUS = 20;
 const NUM_ANTS = 50;
@@ -71,6 +71,11 @@ function tryStep(ant, nextPosition) {
 
   // Checks if ant on surface otherwise updates antCollisions
   if (onSurface || onSurface2) {
+    if (!goalReached && onSurface2) {
+      completionTime = round(millis() / 1000);
+      goalReached = true;
+    }
+
     ant.position = nextPosition;
     return true;
   } else {
@@ -99,10 +104,7 @@ function draw() {
         ? start
         : end;
       ant.angle = random(0, Math.PI);
-      if (!goalReached) {
-        completionTime = round(millis() / 1000);
-        goalReached = true;
-      }
+
     }
 
     // Set random jiggle for ants
