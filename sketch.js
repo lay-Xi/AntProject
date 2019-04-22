@@ -1,5 +1,5 @@
 const WIDTH = 300;
-const HEIGHT = 300;
+const HEIGHT = 100;
 const ants = [];
 const GOAL_RADIUS = 20;
 const NUM_ANTS = 50;
