@@ -9,6 +9,8 @@ const SPEED = 5;
 const TURN_SPEED = 0.5;
 const JIGGLE_SPEED = 0.2;
 
+let goalReached = false;
+let completionTime = 0;
 let surface = null;
 let start;
 let end;
@@ -90,13 +92,17 @@ function tryStep(ant, nextPosition) {
 }
 
 function draw() {
-  // If ant is within goal, change ant's target
+  // If ant is within goal, change ant's target and get completion time
   ants.forEach(ant => {
     if (ant.position.copy().sub(ant.target).mag() < GOAL_RADIUS + 10) {
       ant.target = ant.target == end
         ? start
         : end;
       ant.angle = random(0, Math.PI);
+      if (!goalReached) {
+        completionTime = round(millis() / 1000);
+        goalReached = true;
+      }
     }
 
     // Set random jiggle for ants
@@ -190,4 +196,14 @@ function draw() {
       line(ant.position.x, ant.position.y, a.position.x, a.position.y);
     });
   });
+
+  // If goal reached, display timer
+  if (goalReached) {
+    fill(255);
+    stroke(255);
+    textSize(18);
+    textFont('Helvetica');
+    text('Seconds to goal: ' + completionTime, 10, 15);
+  }
+
 }
