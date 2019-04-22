@@ -8,6 +8,7 @@ const UNFREEZE_TIMER = 30;
 const SPEED = 5;
 const TURN_SPEED = 0.5;
 const JIGGLE_SPEED = 0.2;
+const MARGIN = 50;
 
 let goalReached = false;
 let completionTime = 0;
@@ -17,6 +18,7 @@ let end;
 
 function setup() {
   createCanvas(WIDTH, HEIGHT);
+  frameRate(60);
 
   // Walking surface 1
   surface = [
@@ -57,6 +59,11 @@ function setup() {
 }
 
 function tryStep(ant, nextPosition) {
+  // Border checking for ants
+  if (nextPosition.x <= 0 || nextPosition.x >= WIDTH || nextPosition.y <= 0 || nextPosition.y >= HEIGHT) {
+    return false;
+  }
+
   // https://github.com/bmoren/p5.collide2D/#collidepointpoly
   const onSurface = collidePointPoly(nextPosition.x, nextPosition.y, surface);
   const onSurface2 = collidePointPoly(nextPosition.x, nextPosition.y, surface2);
