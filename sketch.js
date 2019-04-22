@@ -92,7 +92,7 @@ function tryStep(ant, nextPosition) {
 }
 
 function draw() {
-  // If ant is within goal, change ant's target
+  // If ant is within goal, change ant's target and get completion time
   ants.forEach(ant => {
     if (ant.position.copy().sub(ant.target).mag() < GOAL_RADIUS + 10) {
       ant.target = ant.target == end
@@ -197,6 +197,7 @@ function draw() {
     });
   });
 
+  // If goal reached, display timer
   if (goalReached) {
     fill(255);
     stroke(255);
