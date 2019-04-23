@@ -3,16 +3,14 @@ const HEIGHT = 200;
 const ants = [];
 const GOAL_RADIUS = 20;
 const NUM_ANTS = 75;
-const TOUCH_TIMER = 70;
+const FREEZE_TIMER = 70;
 const UNFREEZE_TIMER = 30;
 const SPEED = 5;
-const TURN_SPEED = 0.5;
+const TURN_AMOUNT = 0.5;
 const JIGGLE_SPEED = 0.2;
-const MARGIN = 50;
 
 let goalReached = false;
 let completionTime = 0;
-let surface = null;
 let start;
 let end;
 
@@ -51,7 +49,7 @@ function setup() {
       speed: SPEED,
       position: createVector(0, random(0, HEIGHT)),
       target: end,
-      angle: random(-Math.PI / 4, Math.PI / 4),
+      angle: random(-Math.PI / 2, Math.PI / 2),
       above: new Set(),
       below: new Set(),
     });
@@ -106,6 +104,7 @@ function tryStep(ant, nextPosition) {
 function draw() {
   // If ant is within goal, change ant's target
   ants.forEach(ant => {
+    // Set ant's new goal
     if (ant.position.copy().sub(ant.target).mag() < GOAL_RADIUS + 10) {
       ant.target = ant.target == end
         ? start
@@ -118,7 +117,7 @@ function draw() {
       ant.angle += random(-1, 1) * JIGGLE_SPEED;
     }
 
-    // Timer ??????
+    // Count down to ant unfrozen
     if (ant.timer > 0)
       ant.timer--;
 
@@ -126,7 +125,7 @@ function draw() {
     if (!ant.frozen) {
       const toTarget = ant.target.copy().sub(ant.angle).normalize();
       const antAngle = createVector(Math.cos(ant.angle), Math.sin(ant.angle)).normalize();
-      const closerToTarget = antAngle.copy().mult(0.7).add(toTarget.copy().mult(0.3));
+      const closerToTarget = antAngle.copy().mult(0.3).add(toTarget.copy().mult(0.7));
 
       // Moves ant based on random angle
       if (tryStep(ant, ant.position.copy().add(antAngle.mult(ant.speed)))) {
@@ -136,7 +135,7 @@ function draw() {
       } else if (tryStep(ant, ant.position.copy().add(antAngle.copy().mult(ant.speed)))) {
 
       } else if (ant.timer === 0) {
-        ant.timer = TOUCH_TIMER;
+        ant.timer = FREEZE_TIMER;
         ant.frozen = true;
 
         // Adds ants in range below and above ant
@@ -146,15 +145,16 @@ function draw() {
         });
       } else {
         // Random angle the ants move in
-        ant.angle -= TURN_SPEED * Math.random(-1, 1);
+        ant.angle -= TURN_AMOUNT * Math.random(-1, 1);
       }
     }
   });
 
+  // Keep ant's frozen if there are ant's above it, else unfreeze
   ants.forEach(ant => {
     if (ant.frozen) {
       if (ant.above.size > 0) {
-        ant.timer = TOUCH_TIMER;
+        ant.timer = FREEZE_TIMER;
       } else if (ant.timer === 0) {
         ant.frozen = false;
         ant.timer = UNFREEZE_TIMER;
@@ -173,6 +173,7 @@ function draw() {
   surface.forEach(v => vertex(v.x, v.y));
   endShape(CLOSE);
 
+  // End surface
   fill(200);
   beginShape();
   surface2.forEach(v => vertex(v.x, v.y));
@@ -180,7 +181,7 @@ function draw() {
 
   // Start and end dots
   fill('rgba(255, 0, 0, 0.5)');
-  [start, end].forEach(v => ellipse(v.x, v.y, 2 * GOAL_RADIUS, 2 * GOAL_RADIUS));
+  [/*start,*/ end].forEach(v => ellipse(v.x, v.y, 2 * GOAL_RADIUS, 2 * GOAL_RADIUS));
 
   // Ant colors
   ants.forEach(ant => {
@@ -200,9 +201,9 @@ function draw() {
 
     // Color of direction of top ant's head
     stroke('#FF0000');
-    [...ant.above].forEach(a => {
+    /*[...ant.above].forEach(a => {
       line(ant.position.x, ant.position.y, a.position.x, a.position.y);
-    });
+    });*/
   });
 
   // If goal reached, display timer
