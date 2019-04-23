@@ -1,8 +1,8 @@
-const WIDTH = 300;
-const HEIGHT = 300;
+const WIDTH = 400;
+const HEIGHT = 200;
 const ants = [];
 const GOAL_RADIUS = 20;
-const NUM_ANTS = 50;
+const NUM_ANTS = 75;
 const TOUCH_TIMER = 70;
 const UNFREEZE_TIMER = 30;
 const SPEED = 5;
@@ -40,7 +40,7 @@ function setup() {
   start = createVector(0, HEIGHT / 2);
 
   // Target dot
-  end = createVector(WIDTH, random(0, HEIGHT));
+  end = createVector(WIDTH, HEIGHT / 2);
 
   // Creates ants
   for (let i = 0; i < NUM_ANTS; i++) {
@@ -111,7 +111,6 @@ function draw() {
         ? start
         : end;
       ant.angle = random(0, Math.PI);
-
     }
 
     // Set random jiggle for ants
